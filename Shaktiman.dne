@@ -1,0 +1,564 @@
+// ~->[DNET-1]->~
+
+// File created by GmytrasiewiczP_2 at UIC using Netica 5.24 on Apr 02, 2018 at 22:31:23 UTC.
+
+bnet Megamind {
+AutoCompile = TRUE;
+autoupdate = TRUE;
+whenchanged = 1522708279;
+
+visual V1 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	windowposn = (22, 22, 920, 371);
+	scrollposn = (0, 250);
+	resolution = 72;
+	drawingbounds = (1899, 951);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00e1e1e1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00f8eed2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00d3caa6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00c8c8c8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00ffffb4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00ffbdbd;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00dee8ff;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00f0fafa;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00ffffff;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node JobClass {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (PartTimeJob, FullTimeJob, BusinessPropreitor, Student);
+	parents = ();
+	probs = 
+		// PartTimeJob  FullTimeJob  BusinessPropreit Student  
+		  (0.25,        0.35,        0.35,        0.05);
+	whenchanged = 1521740027;
+	belief = (0.25, 0.35, 0.35, 0.05);
+	visual V1 {
+		center = (186, 60);
+		height = 12;
+		};
+	};
+
+node LengthOfCurrentEmployment {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (AboveFifteenYears, EightToFifteenYears);
+	parents = ();
+	probs = 
+		// AboveFifteenYear EightToFifteenYe 
+		  (0.6,         0.4);
+	whenchanged = 1521740029;
+	belief = (0.6, 0.4);
+	visual V1 {
+		center = (516, 78);
+		height = 1;
+		};
+	};
+
+node EmploymentQuality {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Poor, Good);
+	parents = (JobClass, LengthOfCurrentEmployment);
+	probs = 
+		// Poor         Good          // JobClass         LengthOfCurrentEmployment 
+		  (0.4,         0.6,          // PartTimeJob      AboveFifteenYear          
+		   0.6,         0.4,          // PartTimeJob      EightToFifteenYe          
+		   0.5,         0.5,          // FullTimeJob      AboveFifteenYear          
+		   0.45,        0.55,         // FullTimeJob      EightToFifteenYe          
+		   0.3,         0.7,          // BusinessPropreit AboveFifteenYear          
+		   0.4,         0.6,          // BusinessPropreit EightToFifteenYe          
+		   0.25,        0.75,         // Student          AboveFifteenYear          
+		   0.35,        0.65);        // Student          EightToFifteenYe          ;
+	whenchanged = 1521739933;
+	belief = (0.4215, 0.5785);
+	visual V1 {
+		center = (408, 168);
+		height = 14;
+		link 1 {
+			path = ((267, 101), (354, 142));
+			};
+		};
+	};
+
+node LengthAtResidence {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (FivetoSevenYears, EightToTwelveYears, MoreThan20Years);
+	parents = ();
+	probs = 
+		// FivetoSevenYears EightToTwelveYea MoreThan20Years 
+		  (0.25,        0.35,        0.4);
+	whenchanged = 1521740030;
+	belief = (0.25, 0.35, 0.4);
+	visual V1 {
+		center = (798, 66);
+		height = 16;
+		};
+	};
+
+node HousingStatus {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (OnCampus, OffCampus, AtHomewithRelatives);
+	parents = ();
+	probs = 
+		// OnCampus     OffCampus    AtHomewithRelati 
+		  (0.25,        0.3,         0.45);
+	whenchanged = 1521740031;
+	belief = (0.25, 0.3, 0.45);
+	visual V1 {
+		center = (1038, 132);
+		height = 8;
+		};
+	};
+
+node FinancialStability {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (EmploymentQuality, LengthAtResidence, HousingStatus);
+	probs = 
+		// Yes          No            // EmploymentQuality LengthAtResidence HousingStatus    
+		  (0.917002,    0.08299806,   // Poor              FivetoSevenYears  OnCampus         
+		   0.3545174,   0.6454826,    // Poor              FivetoSevenYears  OffCampus        
+		   0.3241758,   0.6758242,    // Poor              FivetoSevenYears  AtHomewithRelati 
+		   0.4257967,   0.5742033,    // Poor              EightToTwelveYea  OnCampus         
+		   0.4909406,   0.5090594,    // Poor              EightToTwelveYea  OffCampus        
+		   0.9206184,   0.07938164,   // Poor              EightToTwelveYea  AtHomewithRelati 
+		   0.7125338,   0.2874663,    // Poor              MoreThan20Years   OnCampus         
+		   0.2308764,   0.7691236,    // Poor              MoreThan20Years   OffCampus        
+		   0.3768214,   0.6231785,    // Poor              MoreThan20Years   AtHomewithRelati 
+		   0.7777774,   0.2222226,    // Good              FivetoSevenYears  OnCampus         
+		   0.5830637,   0.4169362,    // Good              FivetoSevenYears  OffCampus        
+		   0.6133839,   0.3866161,    // Good              FivetoSevenYears  AtHomewithRelati 
+		   0.3537943,   0.6462057,    // Good              EightToTwelveYea  OnCampus         
+		   0.6203294,   0.3796706,    // Good              EightToTwelveYea  OffCampus        
+		   0.7776445,   0.2223554,    // Good              EightToTwelveYea  AtHomewithRelati 
+		   0.3850625,   0.6149375,    // Good              MoreThan20Years   OnCampus         
+		   0.5041606,   0.4958394,    // Good              MoreThan20Years   OffCampus        
+		   0.6802961,   0.3197038);   // Good              MoreThan20Years   AtHomewithRelati ;
+	whenchanged = 1521739207;
+	belief = (0.567481, 0.432519);
+	visual V1 {
+		center = (684, 222);
+		height = 15;
+		};
+	};
+
+node Age {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Age18to30, Age30to45, Above45);
+	parents = ();
+	probs = 
+		// Age18to30    Age30to45    Above45      
+		  (0.45,        0.35,        0.2);
+	whenchanged = 1521649015;
+	belief = (0.45, 0.35, 0.2);
+	visual V1 {
+		center = (1206, 312);
+		height = 9;
+		};
+	};
+
+node PersonalStatus {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Good, Bad);
+	parents = ();
+	probs = 
+		// Good         Bad          
+		  (0.5,         0.5);
+	whenchanged = 1521740056;
+	belief = (0.5, 0.5);
+	visual V1 {
+		center = (1056, 612);
+		height = 18;
+		};
+	};
+
+node Personal {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (Age, PersonalStatus);
+	probs = 
+		// Yes          No            // Age       PersonalStatus 
+		  (0.45,        0.55,         // Age18to30 Good           
+		   0.45,        0.55,         // Age18to30 Bad            
+		   0.55,        0.45,         // Age30to45 Good           
+		   0.55,        0.45,         // Age30to45 Bad            
+		   0.35,        0.65,         // Above45   Good           
+		   0.35,        0.65);        // Above45   Bad            ;
+	whenchanged = 1521736893;
+	belief = (0.465, 0.535);
+	visual V1 {
+		center = (1014, 468);
+		height = 10;
+		};
+	};
+
+node CheckingAccount {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = ();
+	probs = 
+		// Yes          No           
+		  (0.5,         0.5);
+	whenchanged = 1521648824;
+	belief = (0.5, 0.5);
+	visual V1 {
+		center = (114, 294);
+		height = 13;
+		};
+	};
+
+node Savings {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Below100000, Below500000);
+	parents = ();
+	probs = 
+		// Below100000  Below500000  
+		  (0.45,        0.55);
+	whenchanged = 1521651901;
+	belief = (0.45, 0.55);
+	visual V1 {
+		center = (348, 246);
+		height = 5;
+		};
+	};
+
+node Assets {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (ThirtyToFiftyThousandDollars, AboveFiftyThousandDollars);
+	parents = (CheckingAccount, Savings);
+	probs = 
+		// ThirtyToFiftyTho AboveFiftyThousa  // CheckingAccount Savings     
+		  (0.6,         0.4,          // Yes             Below100000 
+		   0.3,         0.7,          // Yes             Below500000 
+		   0.3,         0.7,          // No              Below100000 
+		   0.55,        0.45);        // No              Below500000 ;
+	whenchanged = 1521740037;
+	belief = (0.43625, 0.56375);
+	visual V1 {
+		center = (390, 360);
+		height = 2;
+		};
+	};
+
+node CreditHistory {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Poor, Good);
+	parents = ();
+	probs = 
+		// Poor         Good         
+		  (0.5,         0.5);
+	whenchanged = 1521740033;
+	belief = (0.5, 0.5);
+	visual V1 {
+		center = (1158, 210);
+		height = 6;
+		};
+	};
+
+node CreditQuality {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Low, Average, High);
+	parents = (CreditHistory);
+	probs = 
+		// Low          Average      High          // CreditHistory 
+		  (0.5,         0.3,         0.2,          // Poor          
+		   0.2,         0.3,         0.5);         // Good          ;
+	whenchanged = 1521740034;
+	belief = (0.35, 0.3, 0.35);
+	visual V1 {
+		center = (924, 246);
+		height = 17;
+		};
+	};
+
+node IndividualCreditWorthiness {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Low, Average, High);
+	parents = (Personal, EmploymentQuality, Assets, FinancialStability, CreditQuality);
+	probs = 
+		// Low          Average      High          // Personal EmploymentQuality Assets           FinancialStability CreditQuality 
+		  (0.2751296,   0.3507795,   0.3740908,    // Yes      Poor              ThirtyToFiftyTho Yes                Low           
+		   0.2467055,   0.4602273,   0.2930672,    // Yes      Poor              ThirtyToFiftyTho Yes                Average       
+		   0.2733611,   0.3256782,   0.4009608,    // Yes      Poor              ThirtyToFiftyTho Yes                High          
+		   0.1087962,   0.1132459,   0.7779579,    // Yes      Poor              ThirtyToFiftyTho No                 Low           
+		   0.1161608,   0.6249188,   0.2589205,    // Yes      Poor              ThirtyToFiftyTho No                 Average       
+		   0.3976753,   0.3591523,   0.2431725,    // Yes      Poor              ThirtyToFiftyTho No                 High          
+		   0.2601488,   0.03603731,  0.7038139,    // Yes      Poor              AboveFiftyThousa Yes                Low           
+		   0.3218695,   0.3198593,   0.3582712,    // Yes      Poor              AboveFiftyThousa Yes                Average       
+		   0.2687218,   0.4406057,   0.2906725,    // Yes      Poor              AboveFiftyThousa Yes                High          
+		   0.01024739,  0.4866152,   0.5031375,    // Yes      Poor              AboveFiftyThousa No                 Low           
+		   0.4159252,   0.4834282,   0.1006466,    // Yes      Poor              AboveFiftyThousa No                 Average       
+		   0.2762974,   0.4606176,   0.263085,     // Yes      Poor              AboveFiftyThousa No                 High          
+		   0.3998635,   0.5789778,   0.02115873,   // Yes      Good              ThirtyToFiftyTho Yes                Low           
+		   0.08383039,  0.510112,    0.4060576,    // Yes      Good              ThirtyToFiftyTho Yes                Average       
+		   0.1333957,   0.5190032,   0.3476011,    // Yes      Good              ThirtyToFiftyTho Yes                High          
+		   0.5006303,   0.1990619,   0.3003079,    // Yes      Good              ThirtyToFiftyTho No                 Low           
+		   0.3397405,   0.3892916,   0.2709679,    // Yes      Good              ThirtyToFiftyTho No                 Average       
+		   0.3343307,   0.5067248,   0.1589445,    // Yes      Good              ThirtyToFiftyTho No                 High          
+		   0.2175516,   0.3938453,   0.3886031,    // Yes      Good              AboveFiftyThousa Yes                Low           
+		   0.3791339,   0.489823,    0.1310431,    // Yes      Good              AboveFiftyThousa Yes                Average       
+		   0.3665614,   0.393773,    0.2396655,    // Yes      Good              AboveFiftyThousa Yes                High          
+		   0.7848747,   0.1340231,   0.08110224,   // Yes      Good              AboveFiftyThousa No                 Low           
+		   0.1704363,   0.299469,    0.5300947,    // Yes      Good              AboveFiftyThousa No                 Average       
+		   0.02090066,  0.350483,    0.6286163,    // Yes      Good              AboveFiftyThousa No                 High          
+		   0.3813477,   0.3226446,   0.2960077,    // No       Poor              ThirtyToFiftyTho Yes                Low           
+		   0.2802629,   0.3177887,   0.4019484,    // No       Poor              ThirtyToFiftyTho Yes                Average       
+		   0.4781337,   0.4157057,   0.1061606,    // No       Poor              ThirtyToFiftyTho Yes                High          
+		   0.3539806,   0.4006775,   0.2453419,    // No       Poor              ThirtyToFiftyTho No                 Low           
+		   0.1828595,   0.6164538,   0.2006867,    // No       Poor              ThirtyToFiftyTho No                 Average       
+		   0.1469967,   0.4215102,   0.4314932,    // No       Poor              ThirtyToFiftyTho No                 High          
+		   0.1897883,   0.4473627,   0.3628491,    // No       Poor              AboveFiftyThousa Yes                Low           
+		   0.2731407,   0.3168781,   0.4099812,    // No       Poor              AboveFiftyThousa Yes                Average       
+		   0.3945762,   0.4620953,   0.1433285,    // No       Poor              AboveFiftyThousa Yes                High          
+		   0.4223578,   0.3979112,   0.1797311,    // No       Poor              AboveFiftyThousa No                 Low           
+		   0.4408269,   0.005308832, 0.5538642,    // No       Poor              AboveFiftyThousa No                 Average       
+		   0.08351662,  0.5331073,   0.383376,     // No       Poor              AboveFiftyThousa No                 High          
+		   0.2536004,   0.3841895,   0.3622101,    // No       Good              ThirtyToFiftyTho Yes                Low           
+		   0.3748934,   0.2733789,   0.3517277,    // No       Good              ThirtyToFiftyTho Yes                Average       
+		   0.3327395,   0.3240275,   0.3432329,    // No       Good              ThirtyToFiftyTho Yes                High          
+		   0.290748,    0.4170614,   0.2921906,    // No       Good              ThirtyToFiftyTho No                 Low           
+		   0.2682943,   0.5193526,   0.2123531,    // No       Good              ThirtyToFiftyTho No                 Average       
+		   0.4417216,   0.5401855,   0.01809289,   // No       Good              ThirtyToFiftyTho No                 High          
+		   0.3006467,   0.4067065,   0.2926468,    // No       Good              AboveFiftyThousa Yes                Low           
+		   0.3913225,   0.2782328,   0.3304447,    // No       Good              AboveFiftyThousa Yes                Average       
+		   0.5293348,   0.1756526,   0.2950126,    // No       Good              AboveFiftyThousa Yes                High          
+		   0.2538724,   0.3474307,   0.398697,     // No       Good              AboveFiftyThousa No                 Low           
+		   0.3538782,   0.2895144,   0.3566074,    // No       Good              AboveFiftyThousa No                 Average       
+		   0.05304006,  0.2062327,   0.7407272);   // No       Good              AboveFiftyThousa No                 High          ;
+	whenchanged = 1521740036;
+	belief = (0.3011668, 0.3712551, 0.3275782);
+	visual V1 {
+		center = (678, 336);
+		height = 7;
+		};
+	};
+
+node LoanPurpose {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Education, Housing, Car, Business);
+	parents = ();
+	probs = 
+		// Education    Housing      Car          Business     
+		  (0.1,         0.3,         0.25,        0.35);
+	whenchanged = 1522707789;
+	belief = (0.1, 0.3, 0.25, 0.35);
+	visual V1 {
+		center = (318, 510);
+		height = 3;
+		};
+	};
+
+node CreditAmount {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Below100000, Below500000, Above500000);
+	parents = ();
+	probs = 
+		// Below100000  Below500000  Above500000  
+		  (0.235,       0.305,       0.46);
+	whenchanged = 1521739937;
+	belief = (0.235, 0.305, 0.46);
+	visual V1 {
+		center = (510, 438);
+		height = 11;
+		};
+	};
+
+node LoanDuration {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (LessThan10years, MoreThan10years);
+	parents = ();
+	probs = 
+		// LessThan10years MoreThan10years 
+		  (0.55,        0.45);
+	whenchanged = 1522708279;
+	belief = (0.55, 0.45);
+	visual V1 {
+		center = (864, 540);
+		height = 21;
+		};
+	};
+
+node LoanRepaid {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (LoanPurpose, CreditAmount, IndividualCreditWorthiness, LoanDuration);
+	probs = 
+		// Yes          No            // LoanPurpose CreditAmount IndividualCreditWorthiness LoanDuration    
+		  (0.47,        0.53,         // Education   Below100000  Low                        LessThan10years 
+		   0.45,        0.55,         // Education   Below100000  Low                        MoreThan10years 
+		   0.6,         0.4,          // Education   Below100000  Average                    LessThan10years 
+		   0.58,        0.42,         // Education   Below100000  Average                    MoreThan10years 
+		   0.8,         0.2,          // Education   Below100000  High                       LessThan10years 
+		   0.7,         0.3,          // Education   Below100000  High                       MoreThan10years 
+		   0.45,        0.55,         // Education   Below500000  Low                        LessThan10years 
+		   0.43,        0.57,         // Education   Below500000  Low                        MoreThan10years 
+		   0.58,        0.42,         // Education   Below500000  Average                    LessThan10years 
+		   0.56,        0.44,         // Education   Below500000  Average                    MoreThan10years 
+		   0.75,        0.25,         // Education   Below500000  High                       LessThan10years 
+		   0.68,        0.32,         // Education   Below500000  High                       MoreThan10years 
+		   0.42,        0.58,         // Education   Above500000  Low                        LessThan10years 
+		   0.55,        0.45,         // Education   Above500000  Low                        MoreThan10years 
+		   0.5,         0.5,          // Education   Above500000  Average                    LessThan10years 
+		   0.7,         0.3,          // Education   Above500000  Average                    MoreThan10years 
+		   0.65,        0.35,         // Education   Above500000  High                       LessThan10years 
+		   0.8,         0.2,          // Education   Above500000  High                       MoreThan10years 
+		   0.47,        0.53,         // Housing     Below100000  Low                        LessThan10years 
+		   0.45,        0.55,         // Housing     Below100000  Low                        MoreThan10years 
+		   0.6,         0.4,          // Housing     Below100000  Average                    LessThan10years 
+		   0.58,        0.42,         // Housing     Below100000  Average                    MoreThan10years 
+		   0.8,         0.2,          // Housing     Below100000  High                       LessThan10years 
+		   0.7,         0.3,          // Housing     Below100000  High                       MoreThan10years 
+		   0.45,        0.55,         // Housing     Below500000  Low                        LessThan10years 
+		   0.43,        0.57,         // Housing     Below500000  Low                        MoreThan10years 
+		   0.58,        0.42,         // Housing     Below500000  Average                    LessThan10years 
+		   0.56,        0.44,         // Housing     Below500000  Average                    MoreThan10years 
+		   0.75,        0.25,         // Housing     Below500000  High                       LessThan10years 
+		   0.68,        0.32,         // Housing     Below500000  High                       MoreThan10years 
+		   0.42,        0.58,         // Housing     Above500000  Low                        LessThan10years 
+		   0.55,        0.45,         // Housing     Above500000  Low                        MoreThan10years 
+		   0.5,         0.5,          // Housing     Above500000  Average                    LessThan10years 
+		   0.7,         0.3,          // Housing     Above500000  Average                    MoreThan10years 
+		   0.65,        0.35,         // Housing     Above500000  High                       LessThan10years 
+		   0.8,         0.2,          // Housing     Above500000  High                       MoreThan10years 
+		   0.47,        0.53,         // Car         Below100000  Low                        LessThan10years 
+		   0.45,        0.55,         // Car         Below100000  Low                        MoreThan10years 
+		   0.6,         0.4,          // Car         Below100000  Average                    LessThan10years 
+		   0.58,        0.42,         // Car         Below100000  Average                    MoreThan10years 
+		   0.8,         0.2,          // Car         Below100000  High                       LessThan10years 
+		   0.7,         0.3,          // Car         Below100000  High                       MoreThan10years 
+		   0.45,        0.55,         // Car         Below500000  Low                        LessThan10years 
+		   0.6,         0.4,          // Car         Below500000  Low                        MoreThan10years 
+		   0.58,        0.42,         // Car         Below500000  Average                    LessThan10years 
+		   0.8,         0.2,          // Car         Below500000  Average                    MoreThan10years 
+		   0.7,         0.3,          // Car         Below500000  High                       LessThan10years 
+		   0.45,        0.55,         // Car         Below500000  High                       MoreThan10years 
+		   0.43,        0.57,         // Car         Above500000  Low                        LessThan10years 
+		   0.58,        0.42,         // Car         Above500000  Low                        MoreThan10years 
+		   0.56,        0.44,         // Car         Above500000  Average                    LessThan10years 
+		   0.75,        0.25,         // Car         Above500000  Average                    MoreThan10years 
+		   0.68,        0.32,         // Car         Above500000  High                       LessThan10years 
+		   0.42,        0.58,         // Car         Above500000  High                       MoreThan10years 
+		   0.55,        0.45,         // Business    Below100000  Low                        LessThan10years 
+		   0.5,         0.5,          // Business    Below100000  Low                        MoreThan10years 
+		   0.7,         0.3,          // Business    Below100000  Average                    LessThan10years 
+		   0.65,        0.35,         // Business    Below100000  Average                    MoreThan10years 
+		   0.8,         0.2,          // Business    Below100000  High                       LessThan10years 
+		   0.47,        0.53,         // Business    Below100000  High                       MoreThan10years 
+		   0.45,        0.55,         // Business    Below500000  Low                        LessThan10years 
+		   0.6,         0.4,          // Business    Below500000  Low                        MoreThan10years 
+		   0.58,        0.42,         // Business    Below500000  Average                    LessThan10years 
+		   0.8,         0.2,          // Business    Below500000  Average                    MoreThan10years 
+		   0.7,         0.3,          // Business    Below500000  High                       LessThan10years 
+		   0.45,        0.55,         // Business    Below500000  High                       MoreThan10years 
+		   0.6,         0.4,          // Business    Above500000  Low                        LessThan10years 
+		   0.58,        0.42,         // Business    Above500000  Low                        MoreThan10years 
+		   0.8,         0.2,          // Business    Above500000  Average                    LessThan10years 
+		   0.7,         0.3,          // Business    Above500000  Average                    MoreThan10years 
+		   0.45,        0.55,         // Business    Above500000  High                       LessThan10years 
+		   0.35,        0.65);        // Business    Above500000  High                       MoreThan10years ;
+	whenchanged = 1522708279;
+	belief = (0.5956694, 0.4043306);
+	visual V1 {
+		center = (624, 600);
+		height = 4;
+		};
+	};
+
+node Deadline_Extension {
+	kind = DECISION;
+	discrete = TRUE;
+	chance = DETERMIN;
+	states = (Approved, Rejected);
+	parents = (LoanDuration);
+	functable = 
+		                    // LoanDuration    
+		  (Approved,        // LessThan10years 
+		   Rejected);       // MoreThan10years ;
+	whenchanged = 1522708261;
+	belief = (1, 0);
+	visual V1 {
+		center = (864, 702);
+		height = 20;
+		};
+	};
+
+node Existing_Credit_WithBank {
+	kind = UTILITY;
+	discrete = FALSE;
+	measure = RATIO;
+	chance = DETERMIN;
+	parents = (Deadline_Extension, LoanPurpose, LoanDuration);
+	functable = 
+		                 // Deadline_Extension LoanPurpose LoanDuration    
+		  (45,           // Approved           Education   LessThan10years 
+		   55,           // Approved           Education   MoreThan10years 
+		   25,           // Approved           Housing     LessThan10years 
+		   75,           // Approved           Housing     MoreThan10years 
+		   35,           // Approved           Car         LessThan10years 
+		   45,           // Approved           Car         MoreThan10years 
+		   45,           // Approved           Business    LessThan10years 
+		   55,           // Approved           Business    MoreThan10years 
+		   35,           // Rejected           Education   LessThan10years 
+		   75,           // Rejected           Education   MoreThan10years 
+		   30,           // Rejected           Housing     LessThan10years 
+		   70,           // Rejected           Housing     MoreThan10years 
+		   20,           // Rejected           Car         LessThan10years 
+		   80,           // Rejected           Car         MoreThan10years 
+		   10,           // Rejected           Business    LessThan10years 
+		   90);          // Rejected           Business    MoreThan10years ;
+	whenchanged = 1522708237;
+	visual V1 {
+		center = (546, 726);
+		height = 19;
+		};
+	};
+ElimOrder = (CreditHistory, CheckingAccount, Savings, Age, PersonalStatus, JobClass, LengthOfCurrentEmployment, LengthAtResidence, HousingStatus, CreditAmount, LoanRepaid, LoanPurpose, EmploymentQuality, FinancialStability, Personal, Assets, CreditQuality, IndividualCreditWorthiness, Deadline_Extension, LoanDuration);
+};
